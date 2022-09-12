@@ -1,0 +1,524 @@
+#include <stdio.h>
+#include <conio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <thread>
+
+int handle;
+typedef char PACKAGENAME;
+long int get_module_base(int pid, const char *module_name)
+{
+	FILE *fp;
+	long addr = 0;
+	char *pch;
+	char filename[32];
+	char line[1024];
+	snprintf(filename, sizeof(filename), "/proc/%d/maps", pid);
+	fp = fopen(filename, "r");
+	if (fp != NULL)
+	{
+		while (fgets(line, sizeof(line), fp))
+		{
+			if (strstr(line, module_name))
+			{
+				pch = strtok(line, "-");
+				addr = strtoul(pch, NULL, 16);
+				break;
+			}
+		}
+		fclose(fp);
+	}
+	return addr;
+}
+
+int WriteBaseAddress_FLOAT(long int addr, float value)
+{
+	pwrite64(handle, &value, 4, addr);
+	return 0;
+}
+
+int WriteBaseAddress_DWORD(long int addr, int value)
+{
+	pwrite64(handle, &value, 4, addr);
+	return 0;
+}
+
+int getPID(PACKAGENAME * PackageName)
+{
+	DIR *dir = NULL;
+	struct dirent *ptr = NULL;
+	FILE *fp = NULL;
+	char filepath[256];
+	char filetext[128];
+	dir = opendir("/proc");
+	if (NULL != dir)
+	{
+		while ((ptr = readdir(dir)) != NULL)
+		{
+
+			if ((strcmp(ptr->d_name, ".") == 0) || (strcmp(ptr->d_name, "..") == 0))
+				continue;
+			if (ptr->d_type != DT_DIR)
+				continue;
+			sprintf(filepath, "/proc/%s/cmdline", ptr->d_name);
+			fp = fopen(filepath, "r");
+			if (NULL != fp)
+			{
+				fgets(filetext, sizeof(filetext), fp);
+				if (strcmp(filetext, PackageName) == 0)
+				{
+
+					break;
+				}
+				fclose(fp);
+			}
+		}
+	}
+	if (readdir(dir) == NULL)
+	{
+		return 0;
+	}
+	closedir(dir);
+	return atoi(ptr->d_name);
+}
+
+int main(int argc, char **argv)
+{
+	int ipid = getPID("com.tencent.ig");
+	if (ipid == 0)
+	{
+		ipid = getPID("com.pubg.krmobile");
+		if (ipid == 0)
+		{
+			ipid = getPID("com.vng.pubgmobile");
+			if (ipid == 0)
+			{
+				ipid = getPID("com.pubg.imobile");
+				if (ipid == 0)
+				{
+					puts("\n\n█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█\n🅣🅔🅛🅔🅖🅡🅐🅜 : @DecodingLua\n★★★★★★★★★★\n█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n");
+					exit(1);
+				}
+			}
+		}
+	}
+
+
+	char lj[64];
+	sprintf(lj, "/proc/%d/mem", ipid);
+	handle = open(lj, O_RDWR);
+	if (handle == -1)
+	{
+		puts("ERROR");
+		exit(1);
+	}
+	puts("DONE");
+	char mname[] = "libUE4.so";
+	long int libbase = get_module_base(ipid, mname);
+	
+WriteBaseAddress_DWORD(libbase + 0x76B63C0, 0);
+WriteBaseAddress_DWORD(libbase + 0x76B63C4, 0);
+WriteBaseAddress_DWORD(libbase + 0x76B63C8, 0);
+WriteBaseAddress_DWORD(libbase + 0x76B63CC, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A444, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A448, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A44C, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A450, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A490, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A494, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A498, 0);
+WriteBaseAddress_DWORD(libbase + 0x7F9A49C, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC4490, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC4494, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC4498, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC449C, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC58B0, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC58B4, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC58B8, 0);
+WriteBaseAddress_DWORD(libbase + 0xABC58BC, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da005, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da006, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da007, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da008, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da009, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da00a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da00b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da00c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da00d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da00e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da00f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da010, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da011, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da012, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da013, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da014, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da015, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da016, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da017, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da018, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da019, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d4c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d4d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d4e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d4f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d50, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d51, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d52, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d53, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d54, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d55, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d56, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d57, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d58, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d59, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d5a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d5b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d5c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d5d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d5e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d5f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d60, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d61, 0);
+WriteBaseAddress_DWORD(libbase + 0x71d9d62, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da020, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da021, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da022, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da023, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da024, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da025, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da026, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da027, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da028, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da029, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da030, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da031, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da032, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da033, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da034, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da035, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da036, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da037, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da038, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da040, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da041, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da042, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da043, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da044, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da045, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da046, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da047, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da048, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da049, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da050, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da051, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da052, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da053, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da054, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da01f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da020, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da021, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da022, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da023, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da024, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da025, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da026, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da027, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da028, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da029, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da02f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da030, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da031, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da032, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da033, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da03f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da040, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da041, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da042, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da043, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da044, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da045, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da046, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da047, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da048, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da049, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da04f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da050, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da051, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da056, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da057, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da058, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da059, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da05a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da05b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da05c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da05d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da05e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da05f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da060, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da061, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da062, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da063, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da064, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da065, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da066, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da067, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da068, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da069, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da06a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da06b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da06c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71da06d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc008, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc009, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc00a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc00b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc00c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc00d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc00e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc00f, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc010, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc011, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc012, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc013, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc014, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc015, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc016, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc017, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc018, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc019, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc01a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc01b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc01c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71dc01d, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9c8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9c9, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9ca, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9cb, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9cc, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9cd, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9ce, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9cf, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9d0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9d1, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9d2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727c9d3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caea, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caeb, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caec, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caed, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caee, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caef, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf1, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf4, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf5, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf6, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf7, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caf9, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cafa, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cafb, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cafc, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cafd, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cafe, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caff, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad4, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad5, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad6, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad7, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad9, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cada, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cadb, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cadc, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cadd, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cade, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cadf, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae1, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae4, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae5, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae6, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae7, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cae8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cabe, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cabf, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac1, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac4, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac5, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac6, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac7, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cac9, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caca, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cacb, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cacc, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cacd, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cace, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cacf, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cad0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727ca9e, 0);
+WriteBaseAddress_DWORD(libbase + 0x727ca9f, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa1, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa4, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa5, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa6, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa7, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caa9, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caaa, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caab, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caac, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caad, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caae, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caaf, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab0, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab1, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab2, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab3, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab4, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab5, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab6, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab7, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab8, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cab9, 0);
+WriteBaseAddress_DWORD(libbase + 0x727caba, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cabb, 0);
+WriteBaseAddress_DWORD(libbase + 0x727cabc, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d000, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d001, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d002, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d003, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d004, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d005, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d006, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d007, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d008, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d009, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d00a, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d00b, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d01c, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d01d, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d01e, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d01f, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d020, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d021, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d022, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d023, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d024, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d025, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d026, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d027, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d028, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d029, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d02a, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d02b, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d02c, 0);
+WriteBaseAddress_DWORD(libbase + 0x727d02d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9270, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9271, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9272, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9273, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9274, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9275, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9276, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9277, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9278, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e9279, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e927a, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e927b, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e927c, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e927d, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e927e, 0);
+WriteBaseAddress_DWORD(libbase + 0x71e927f, 0);
+WriteBaseAddress_DWORD(libbase + 0x38B3FC, 0);
+WriteBaseAddress_DWORD(libbase + 0x38B410, 0);
+WriteBaseAddress_DWORD(libbase + 0x38B460, 0);
+WriteBaseAddress_DWORD(libbase + 0x38B474, 0);
+WriteBaseAddress_DWORD(libbase + 0x38D3BC, 0);
+WriteBaseAddress_DWORD(libbase + 0x38F4A4, 0);
+WriteBaseAddress_DWORD(libbase + 0x38F5EC, 0);
+WriteBaseAddress_DWORD(libbase + 0x38FAA4, 0);
+WriteBaseAddress_DWORD(libbase + 0x38FB04, 0);
+WriteBaseAddress_DWORD(libbase + 0x390574, 0);
+WriteBaseAddress_DWORD(libbase + 0x390630, 0);
+WriteBaseAddress_DWORD(libbase + 0x39121C, 0);
+WriteBaseAddress_DWORD(libbase + 0x3913AC, 0);
+WriteBaseAddress_DWORD(libbase + 0xAFD44, 0);
+WriteBaseAddress_DWORD(libbase + 0xAF2F4, 0);
+WriteBaseAddress_DWORD(libbase + 0xAF2E0, 0);
+WriteBaseAddress_DWORD(libbase + 0xACC90, 0);
+WriteBaseAddress_DWORD(libbase + 0xACC60, 0);
+WriteBaseAddress_DWORD(libbase + 0xACC50, 0);
+WriteBaseAddress_DWORD(libbase + 0xAB89C, 0);
+WriteBaseAddress_DWORD(libbase + 0xA91C4, 0);
+WriteBaseAddress_DWORD(libbase + 0xA762C, 0);
+WriteBaseAddress_DWORD(libbase + 0xA6D2C, 0);
+WriteBaseAddress_DWORD(libbase + 0xA6A50, 0);
+WriteBaseAddress_DWORD(libbase + 0xA50DC, 0);
+WriteBaseAddress_DWORD(libbase + 0xA506C, 0);
+WriteBaseAddress_DWORD(libbase + 0xA0E64, 0);
+WriteBaseAddress_DWORD(libbase + 0x9D220, 0);
+
+
+
+
+
+			close(handle);
+	return 0;
+}
